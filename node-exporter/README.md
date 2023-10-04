@@ -30,9 +30,9 @@ By default, Prometheus Node Exporter listens on TCP port 9100.
 The default credentials are below ⚠️ PLEASE CHANGE THEM ⚠️:
 
 ```
-Username            prom
-Password (plain)    prometheus123@
-Password (bcrypt)   $2a$12$Azy3nrjebl.U17DLmpX57.cUUKzm/PX5thtAkf7xl/hUHSJrm4VkS
+Username            racksync
+Password (plain)    racksync
+Password (bcrypt)   $2a$12$gFHyQeG0f96Q6ZjIVqGJ.ebm1gCJp1oBjuBUgdL56.5Z61Fuqiccm
 ```
 
 ### TLS
