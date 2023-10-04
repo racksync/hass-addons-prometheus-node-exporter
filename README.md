@@ -13,7 +13,7 @@ Please note that this add-on is provided "as is" and without any warranty. The u
 [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https://github.com/racksync/hass-addons-prometheus-node-exporter)
 
 
-- Navigate to your Home Assistant instance. Go to the "Supervisor" panel, select the "Add-on Store" tab and click on the three dots in the upper right corner to open the menu. Choose "Repositories" and add the following repository URL:
+1. Navigate to your Home Assistant instance. Go to the "Supervisor" panel, select the "Add-on Store" tab and click on the three dots in the upper right corner to open the menu. Choose "Repositories" and add the following repository URL:
 
 Click "Add" and wait for the repository to be added.
 
