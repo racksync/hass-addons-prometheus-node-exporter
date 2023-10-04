@@ -1,0 +1,48 @@
+name: Prometheus Node Exporter
+version: 2023.10.1
+slug: racksync-prometheus-node-exporter
+description: Expose Hardware Metrics with Prometheus Node-Exporter 
+url: https://github.com/racksync/hass-addons-suite/tree/main/prometheus-node-exporter
+arch: 
+  - amd64
+  - aarch64
+  - armv7
+init: false
+webui: '[PROTO:enable_tls]://[HOST]:[PORT:9100]'
+ports: 
+  9100/tcp:9100
+ports_description: 
+  9100/tcp: Default node exporter port expose
+map: 
+  - config:rw
+  - ssl
+startup: services
+boot: auto
+host_network: true
+apparmor: false
+host_pid: true
+homeassistant: 2023.8.1
+advanced: true
+stage: experimental
+hassio_api: true
+homeassistant_api: true
+auth_api: true
+docker_api: true
+options: 
+  enable_basic_auth: false
+  basic_auth_user: racksync
+  basic_auth_pass: $2a$12$Azy3nrjebl.U17DLmpX57.cUUKzm/PX5thtAkf7xl/hUHSJrm4VkS
+  enable_tls: false
+  cert_file: 
+  cert_key: 
+  cmdline_extra_args: 
+  note: ""
+schema: 
+  enable_basic_auth: bool
+  basic_auth_user: str
+  basic_auth_pass: str
+  enable_tls: bool
+  cert_file: str
+  cert_key: str
+  cmdline_extra_args: str?
+  note: str?

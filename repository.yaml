@@ -1,0 +1,4 @@
+# https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
+name: "RACKSYNC - Prometheus Node Exporter"
+url: 'https://github.com/racksync/hass-addons-prometheus-node-exporter'
+maintainer: "RACKSYNC CO., LTD. <devops@racksync.com>"
