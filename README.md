@@ -36,8 +36,6 @@ For support, issues, or enhancement requests, please submit a GitHub issue in th
 
 Contributions to improve the add-on are welcome. Feel free to fork the repository and submit a pull request.
 
-
-
 ## Notes
 
 - Security: Ensure to secure your deployment, especially if it's used in a production environment.
