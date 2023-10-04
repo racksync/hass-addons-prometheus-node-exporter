@@ -31,7 +31,7 @@ docker_api: true
 options: 
   enable_basic_auth: false
   basic_auth_user: racksync
-  basic_auth_pass: $2a$12$Azy3nrjebl.U17DLmpX57.cUUKzm/PX5thtAkf7xl/hUHSJrm4VkS
+  basic_auth_pass: $2a$12$gFHyQeG0f96Q6ZjIVqGJ.ebm1gCJp1oBjuBUgdL56.5Z61Fuqiccm
   enable_tls: false
   cert_file: ""
   cert_key: ""
