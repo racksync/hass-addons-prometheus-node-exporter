@@ -1,13 +1,42 @@
 # Home Assistant Prometheus Node-Exporter Add-on
-## Disclaimer ###
+
+We appreciate the work done by the developers of the original [hassos-addons](https://github.com/loganmarchione/hassos-addons) and aim to build upon it, ensuring the Prometheus Node Exporter add-on continues to be a valuable tool for the Home Assistant community. Contributions, suggestions, and feedback are always welcome to further improve and enhance this fork.
+
+## Disclaimer
+
+**Use At Your Own Risk**
+
+Please note that this add-on is provided "as is" and without any warranty. The use of the Prometheus Node Exporter add-on for Home Assistant is at your own risk and the developers/contributors are not responsible for any damage or loss of data that may occur from its use. Always ensure that you have a complete backup of your Home Assistant instance before installing and using this add-on.
+
+## Installation
+
+- Navigate to your Home Assistant instance. Go to the "Supervisor" panel, select the "Add-on Store" tab and click on the three dots in the upper right corner to open the menu. Choose "Repositories" and add the following repository URL:
+
+Click "Add" and wait for the repository to be added.
+
+2. **Install the Add-on**
+
+After adding the repository, look for "Prometheus Node Exporter" in the "Add-on Store" tab. Click on it and press the "INSTALL" button.
+
+3. **Configure the Add-on**
+
+Once the installation is complete, navigate to the "Configuration" tab of the add-on. Adjust the configuration according to your needs. Be sure to read through any documentation provided by the add-on to understand the available options.
+
+4. **Start the Add-on**
+
+Navigate to the "Info" tab and click "START" to run the add-on. Check the logs for any errors or information regarding the startup process.
+
+5. **Verify the Installation**
+
+Ensure that the Prometheus Node Exporter is running and accessible. You might want to check the "LOGS" tab for any issues or confirmation of successful startup.
+
+## Support and Contribution
+
+For support, issues, or enhancement requests, please submit a GitHub issue in the [repository](https://github.com/racksync/hass-addons-prometheus-node-exporter).
+
+Contributions to improve the add-on are welcome. Feel free to fork the repository and submit a pull request.
 
 
-
-## How to Install Add-on
-
-
-
-![racksync-screenshot](https://github.com/racksync/hass-addons-prometheus-node-exporter/blob/main/node-exporter/screenshot.png?raw=true)
 
 ## Notes
 
