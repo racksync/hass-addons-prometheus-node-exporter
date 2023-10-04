@@ -39,10 +39,10 @@ options:
   note: ""
 schema: 
   enable_basic_auth: bool
-  basic_auth_user: str
-  basic_auth_pass: str
-  enable_tls: bool
-  cert_file: str
-  cert_key: str
+  basic_auth_user: str?
+  basic_auth_pass: str?
+  enable_tls: bool?
+  cert_file: str?
+  cert_key: str?
   cmdline_extra_args: str?
   note: str?
