@@ -8,9 +8,9 @@ arch:
   - aarch64
   - armv7
 init: false
-#webui: '[PROTO:enable_tls]://[HOST]:[PORT:9100]'
+webui: '[PROTO:enable_tls]://[HOST]:[PORT:9100]'
 ports: 
-  - '9100/tcp:9100'
+  9100/tcp: 9100
 ports_description: 
   9100/tcp: Default node exporter port expose
 map: 
