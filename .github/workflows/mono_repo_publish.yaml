@@ -47,25 +47,7 @@ jobs:
         git config --global user.name "racksync-bot"
         git config --global user.email "devops@racksync.com"
 
-    - name: Sync files to mono repository
-      run: |
-        echo "🔄 Syncing files to mono repository..."
-
-        cd mono-repo
-        if [ -d "node-exporter" ]; then
-          cp -r node-exporter node-exporter.backup
-          echo "📋 Created backup of existing node-exporter directory"
-          rm -rf node-exporter
-          echo "🗑️ Removed existing node-exporter directory"
-        else
-          echo "📁 Creating new node-exporter directory"
-        fi
-
-        cp -r ../node-exporter .
-
-        echo "✅ Files synced successfully"
-
-    - name: Check for changes
+    - name: Check for changes before sync
       id: changes
       run: |
         cd mono-repo
@@ -73,13 +55,49 @@ jobs:
         if [ ! -d "node-exporter" ]; then
           echo "changed=true" >> $GITHUB_OUTPUT
           echo "🔄 New node-exporter directory will be created"
-        elif git diff --quiet HEAD -- node-exporter/; then
-          echo "changed=false" >> $GITHUB_OUTPUT
-          echo "ℹ️ No changes detected"
         else
-          echo "changed=true" >> $GITHUB_OUTPUT
-          echo "🔄 Changes detected in node-exporter files"
+          # Backup existing directory
+          cp -r node-exporter node-exporter.backup
+          echo "📋 Created backup of existing node-exporter directory"
+          rm -rf node-exporter
+          echo "🗑️ Removed existing node-exporter directory"
+
+          # Copy new files
+          cp -r ../node-exporter .
+          echo "📁 Copied new node-exporter directory"
+
+          # Check for differences
+          if git diff --quiet HEAD -- node-exporter/; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No changes detected"
+            # Restore original directory if no changes
+            rm -rf node-exporter
+            mv node-exporter.backup node-exporter
+            echo "↩️ Restored original directory (no changes)"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "🔄 Changes detected in node-exporter files"
+            rm -rf node-exporter.backup
+            echo "🗑️ Removed backup (changes detected)"
+          fi
         fi
+
+    - name: Sync files to mono repository
+      if: steps.changes.outputs.changed == 'true'
+      run: |
+        echo "🔄 Syncing files to mono repository..."
+
+        cd mono-repo
+        if [ -d "node-exporter.backup" ]; then
+          rm -rf node-exporter.backup
+        fi
+
+        if [ ! -d "node-exporter" ]; then
+          cp -r ../node-exporter .
+          echo "📁 Created new node-exporter directory"
+        fi
+
+        echo "✅ Files synced successfully"
 
     - name: Commit and push changes
       if: steps.changes.outputs.changed == 'true'
