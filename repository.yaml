@@ -1,4 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
-name: "RACKSYNC - Prometheus Node Exporter"
+# This is a source repository that automatically syncs to the production add-ons suite
+name: "RACKSYNC - Prometheus Node Exporter (Source)"
 url: 'https://github.com/racksync/hass-addons-prometheus-node-exporter'
 maintainer: "RACKSYNC CO., LTD. <devops@racksync.com>"
+description: "Source repository for Prometheus Node Exporter add-on that automatically syncs to racksync/hass-addons-suite"
