@@ -1,6 +1,6 @@
 # prometheus_node_exporter
 
-[![CI](https://github.com/loganmarchione/hassos-addons/actions/workflows/main.yml/badge.svg)](https://github.com/loganmarchione/hassos-addons/actions/workflows/main.yml)
+[![CI](https://github.com/racksync/hass-addons-prometheus-node-exporter/actions/workflows/main.yml/badge.svg)](https://github.com/racksync/hass-addons-prometheus-node-exporter/actions/workflows/main.yml)
 
 The Prometheus [Node Exporter](https://github.com/prometheus/node_exporter) for hardware and OS metrics exposed by \*NIX kernels.
 

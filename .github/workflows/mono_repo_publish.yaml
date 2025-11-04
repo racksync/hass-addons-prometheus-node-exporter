@@ -1,0 +1,113 @@
+name: Push to Add-Ons Suite
+on:
+  push:
+    paths:
+      - node-exporter/**
+      - .github/workflows/mono_repo_publish.yaml
+    branches: main
+
+  workflow_dispatch:
+
+jobs:
+  push-node-exporter:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Git identity
+      run: |
+        git config --global user.name "racksync-bot"
+        git config --global user.email "devops@racksync.com"
+
+    - name: Validate configuration files
+      run: |
+        echo "Validating configuration files..."
+        cd node-exporter
+        python3 -c "import yaml; yaml.safe_load(open('config.yaml'))" || exit 1
+        python3 -c "import yaml; yaml.safe_load(open('build.yaml'))" || exit 1
+        echo "✅ All configuration files validated"
+
+    - name: Extract version information
+      id: version
+      run: |
+        VERSION=$(python3 -c "import yaml; print(yaml.safe_load(open('node-exporter/config.yaml'))['version'])")
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "📦 Add-on version: $VERSION"
+
+    - name: Clone mono repository
+      run: |
+        git clone https://racksync:${{ secrets.API_TOKEN_GITHUB }}@github.com/racksync/hass-addons-suite.git mono-repo
+        cd mono-repo
+        git config --global user.name "racksync-bot"
+        git config --global user.email "devops@racksync.com"
+
+    - name: Sync files to mono repository
+      run: |
+        echo "🔄 Syncing files to mono repository..."
+
+        cd mono-repo
+        if [ -d "node-exporter" ]; then
+          cp -r node-exporter node-exporter.backup
+          echo "📋 Created backup of existing node-exporter directory"
+        fi
+
+        rm -rf node-exporter
+        cp -r ../node-exporter .
+
+        echo "✅ Files synced successfully"
+
+    - name: Check for changes
+      id: changes
+      run: |
+        cd mono-repo
+        if git diff --quiet HEAD -- node-exporter/; then
+          echo "changed=false" >> $GITHUB_OUTPUT
+          echo "ℹ️ No changes detected"
+        else
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "🔄 Changes detected in node-exporter files"
+        fi
+
+    - name: Commit and push changes
+      if: steps.changes.outputs.changed == 'true'
+      run: |
+        cd mono-repo
+        git add node-exporter/
+        git commit -m "feat: Prometheus Node Exporter v${{ steps.version.outputs.version }} - Updated from legacy repository"
+        git push origin main
+        echo "✅ Changes pushed to mono repository successfully"
+
+    - name: Create release tag
+      if: steps.changes.outputs.changed == 'true'
+      run: |
+        cd mono-repo
+        TAG="node-exporter-v${{ steps.version.outputs.version }}"
+        if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+          git tag -a "$TAG" -m "Prometheus Node Exporter v${{ steps.version.outputs.version }}"
+          git push origin "$TAG"
+          echo "🏷️ Created tag: $TAG"
+        else
+          echo "ℹ️ Tag $TAG already exists"
+        fi
+
+    
+    - name: Summary
+      run: |
+        echo "## 🚀 Prometheus Node Exporter Sync Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Changes:** ${{ steps.changes.outputs.changed == 'true' && 'Yes' || 'No' }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Source:** [Legacy Repository](https://github.com/racksync/hass-addons-prometheus-node-exporter/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
+        echo "**Target:** [Mono Repository](https://github.com/racksync/hass-addons-suite/tree/main/node-exporter)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ steps.changes.outputs.changed }}" == "true" ]; then
+          echo "✅ Successfully synced to mono repository" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "ℹ️ No changes to sync" >> $GITHUB_STEP_SUMMARY
+        fi
