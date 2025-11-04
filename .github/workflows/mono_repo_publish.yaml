@@ -55,9 +55,12 @@ jobs:
         if [ -d "node-exporter" ]; then
           cp -r node-exporter node-exporter.backup
           echo "📋 Created backup of existing node-exporter directory"
+          rm -rf node-exporter
+          echo "🗑️ Removed existing node-exporter directory"
+        else
+          echo "📁 Creating new node-exporter directory"
         fi
 
-        rm -rf node-exporter
         cp -r ../node-exporter .
 
         echo "✅ Files synced successfully"
@@ -66,7 +69,11 @@ jobs:
       id: changes
       run: |
         cd mono-repo
-        if git diff --quiet HEAD -- node-exporter/; then
+        # Check if node-exporter directory exists
+        if [ ! -d "node-exporter" ]; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+          echo "🔄 New node-exporter directory will be created"
+        elif git diff --quiet HEAD -- node-exporter/; then
           echo "changed=false" >> $GITHUB_OUTPUT
           echo "ℹ️ No changes detected"
         else
