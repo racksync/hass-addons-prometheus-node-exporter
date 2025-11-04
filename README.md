@@ -1,19 +1,19 @@
 # Prometheus Node Exporter for Home Assistant
 
-> **Source Repository** - This repository contains the source code for the Prometheus Node Exporter add-on that automatically syncs to the [Home Assistant Add-ons Suite](https://github.com/racksync/hass-addons-suite/tree/main/node-exporter).
+**Source Repository** - This repository contains the source code for the Prometheus Node Exporter add-on that automatically syncs to the [Home Assistant Add-ons Suite](https://github.com/racksync/hass-addons-suite/tree/main/node-exporter).
 
 ## Overview
 
 This add-on exposes hardware and OS metrics for Prometheus monitoring. It collects comprehensive system statistics like CPU, memory, disk, and network usage from your Home Assistant host and makes them available through the Prometheus metrics format.
 
-### Key Features
+## Features
 
-- 🖥️ **Hardware Metrics**: CPU, memory, disk usage, and temperature monitoring
-- 🌐 **Network Statistics**: Real-time network interface monitoring
-- 🔒 **Security-First**: AppArmor protection, minimal permissions, principle of least privilege
-- ⚙️ **Configurable**: Enable/disable specific collectors based on your needs
-- 📊 **Prometheus Compatible**: Standard metrics endpoint for integration with Prometheus/Grafana
-- 🏗️ **Multi-Architecture**: Support for amd64, aarch64, and armv7 systems
+- **Hardware Metrics**: CPU, memory, disk usage, and temperature monitoring
+- **Network Statistics**: Real-time network interface monitoring
+- **Security-First**: AppArmor protection, minimal permissions, principle of least privilege
+- **Configurable**: Enable/disable specific collectors based on your needs
+- **Prometheus Compatible**: Standard metrics endpoint for integration with Prometheus/Grafana
+- **Multi-Architecture**: Support for amd64, aarch64, and armv7 systems
 
 ## Architecture
 
@@ -177,8 +177,12 @@ This add-on follows the same licensing as the [Home Assistant Add-ons Suite](htt
 
 ---
 
-**Maintained by**: [RACKSYNC CO., LTD.](https://racksync.com)
-**Repository**: [Home Assistant Add-ons Suite](https://github.com/racksync/hass-addons-suite)
+**Maintained by**: [RACKSYNC CO., LTD.](https://racksync.com) - ALL ABOUT AUTOMATION
+**Location**: Bangkok, Thailand
+**Email**: devops@racksync.com
+**Website**: [www.racksync.com](https://www.racksync.com)
+**X (Twitter)**: [@racksync](https://twitter.com/racksync)
+**Facebook**: [racksync](https://www.facebook.com/racksync)
 
 
 

@@ -31,7 +31,7 @@ jobs:
         cd node-exporter
         python3 -c "import yaml; yaml.safe_load(open('config.yaml'))" || exit 1
         python3 -c "import yaml; yaml.safe_load(open('build.yaml'))" || exit 1
-        echo "✅ All configuration files validated"
+        echo "All configuration files validated successfully"
 
     - name: Extract version information
       id: version
@@ -54,38 +54,38 @@ jobs:
         # Check if node-exporter directory exists
         if [ ! -d "node-exporter" ]; then
           echo "changed=true" >> $GITHUB_OUTPUT
-          echo "🔄 New node-exporter directory will be created"
+          echo "New node-exporter directory will be created"
         else
           # Backup existing directory
           cp -r node-exporter node-exporter.backup
-          echo "📋 Created backup of existing node-exporter directory"
+          echo "Created backup of existing node-exporter directory"
           rm -rf node-exporter
-          echo "🗑️ Removed existing node-exporter directory"
+          echo "Removed existing node-exporter directory"
 
           # Copy new files
           cp -r ../node-exporter .
-          echo "📁 Copied new node-exporter directory"
+          echo "Copied new node-exporter directory"
 
           # Check for differences
           if git diff --quiet HEAD -- node-exporter/; then
             echo "changed=false" >> $GITHUB_OUTPUT
-            echo "ℹ️ No changes detected"
+            echo "No changes detected"
             # Restore original directory if no changes
             rm -rf node-exporter
             mv node-exporter.backup node-exporter
-            echo "↩️ Restored original directory (no changes)"
+            echo "Restored original directory (no changes)"
           else
             echo "changed=true" >> $GITHUB_OUTPUT
-            echo "🔄 Changes detected in node-exporter files"
+            echo "Changes detected in node-exporter files"
             rm -rf node-exporter.backup
-            echo "🗑️ Removed backup (changes detected)"
+            echo "Removed backup (changes detected)"
           fi
         fi
 
     - name: Sync files to mono repository
       if: steps.changes.outputs.changed == 'true'
       run: |
-        echo "🔄 Syncing files to mono repository..."
+        echo "Syncing files to mono repository..."
 
         cd mono-repo
         if [ -d "node-exporter.backup" ]; then
@@ -94,10 +94,10 @@ jobs:
 
         if [ ! -d "node-exporter" ]; then
           cp -r ../node-exporter .
-          echo "📁 Created new node-exporter directory"
+          echo "Created new node-exporter directory"
         fi
 
-        echo "✅ Files synced successfully"
+        echo "Files synced successfully"
 
     - name: Commit and push changes
       if: steps.changes.outputs.changed == 'true'
@@ -106,7 +106,7 @@ jobs:
         git add node-exporter/
         git commit -m "feat: Prometheus Node Exporter v${{ steps.version.outputs.version }} - Updated from legacy repository"
         git push origin main
-        echo "✅ Changes pushed to mono repository successfully"
+        echo "Changes pushed to mono repository successfully"
 
     - name: Create release tag
       if: steps.changes.outputs.changed == 'true'
@@ -116,23 +116,23 @@ jobs:
         if ! git rev-parse "$TAG" >/dev/null 2>&1; then
           git tag -a "$TAG" -m "Prometheus Node Exporter v${{ steps.version.outputs.version }}"
           git push origin "$TAG"
-          echo "🏷️ Created tag: $TAG"
+          echo "Created tag: $TAG"
         else
-          echo "ℹ️ Tag $TAG already exists"
+          echo "Tag $TAG already exists"
         fi
 
     
     - name: Summary
       run: |
-        echo "## 🚀 Prometheus Node Exporter Sync Summary" >> $GITHUB_STEP_SUMMARY
+        echo "## Prometheus Node Exporter Sync Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
         echo "**Changes:** ${{ steps.changes.outputs.changed == 'true' && 'Yes' || 'No' }}" >> $GITHUB_STEP_SUMMARY
-        echo "**Source:** [Legacy Repository](https://github.com/racksync/hass-addons-prometheus-node-exporter/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
+        echo "**Source:** [Source Repository](https://github.com/racksync/hass-addons-prometheus-node-exporter/commit/${{ github.sha }})" >> $GITHUB_STEP_SUMMARY
         echo "**Target:** [Mono Repository](https://github.com/racksync/hass-addons-suite/tree/main/node-exporter)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         if [ "${{ steps.changes.outputs.changed }}" == "true" ]; then
-          echo "✅ Successfully synced to mono repository" >> $GITHUB_STEP_SUMMARY
+          echo "Successfully synced to mono repository" >> $GITHUB_STEP_SUMMARY
         else
-          echo "ℹ️ No changes to sync" >> $GITHUB_STEP_SUMMARY
+          echo "No changes to sync" >> $GITHUB_STEP_SUMMARY
         fi
