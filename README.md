@@ -1,72 +1,184 @@
-# Home Assistant Prometheus Node-Exporter Add-on
+# Prometheus Node Exporter for Home Assistant
 
-We appreciate the work done by the developers of the original [hassos-addons](https://github.com/loganmarchione/hassos-addons) and aim to build upon it, ensuring the Prometheus Node Exporter add-on continues to be a valuable tool for the Home Assistant community. Contributions, suggestions, and feedback are always welcome to further improve and enhance this fork.
+> **Source Repository** - This repository contains the source code for the Prometheus Node Exporter add-on that automatically syncs to the [Home Assistant Add-ons Suite](https://github.com/racksync/hass-addons-suite/tree/main/node-exporter).
 
-## Disclaimer
+## Overview
 
-**Use At Your Own Risk**
+This add-on exposes hardware and OS metrics for Prometheus monitoring. It collects comprehensive system statistics like CPU, memory, disk, and network usage from your Home Assistant host and makes them available through the Prometheus metrics format.
 
-Please note that this add-on is provided "as is" and without any warranty. The use of the Prometheus Node Exporter add-on for Home Assistant is at your own risk and the developers/contributors are not responsible for any damage or loss of data that may occur from its use. Always ensure that you have a complete backup of your Home Assistant instance before installing and using this add-on.
+### Key Features
+
+- 🖥️ **Hardware Metrics**: CPU, memory, disk usage, and temperature monitoring
+- 🌐 **Network Statistics**: Real-time network interface monitoring
+- 🔒 **Security-First**: AppArmor protection, minimal permissions, principle of least privilege
+- ⚙️ **Configurable**: Enable/disable specific collectors based on your needs
+- 📊 **Prometheus Compatible**: Standard metrics endpoint for integration with Prometheus/Grafana
+- 🏗️ **Multi-Architecture**: Support for amd64, aarch64, and armv7 systems
+
+## Architecture
+
+This repository follows a **source-to-monorepo** architecture:
+
+- **Source**: Here (`node-exporter/` directory) - Development and updates
+- **Target**: [Home Assistant Add-ons Suite](https://github.com/racksync/hass-addons-suite) - Distribution to users
+
+All changes made to the `node-exporter/` directory are automatically validated and synced to the monorepo via GitHub Actions.
 
 ## Installation
 
-[![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https://github.com/racksync/hass-addons-prometheus-node-exporter)
+This add-on is available through the **Home Assistant Add-ons Suite** repository:
 
+1. **Add Repository to Home Assistant**:
+   ```
+   https://github.com/racksync/hass-addons-suite
+   ```
+   Go to **Settings** → **Add-ons** → **Add-on Store** → ⋮ → **Add Repository**
 
-1. Navigate to your Home Assistant instance. Go to the "Supervisor" panel, select the "Add-on Store" tab and click on the three dots in the upper right corner to open the menu. Choose "Repositories" and add the following repository URL:
+2. **Install Prometheus Node Exporter**:
+   - Find "Prometheus Node Exporter" in the store
+   - Click **INSTALL**
+   - Configure as needed (see Configuration section)
+   - **START** the add-on
 
-Click "Add" and wait for the repository to be added.
+## Configuration
 
-2. **Install the Add-on**
+### Basic Setup
 
-After adding the repository, look for "Prometheus Node Exporter" in the "Add-on Store" tab. Click on it and press the "INSTALL" button.
+```yaml
+# Default configuration - works out of the box
+log_level: "info"  # trace|debug|info|warn|error
+enable_basic_auth: false
+enable_tls: false
+```
 
-3. **Configure the Add-on**
+### Advanced Configuration
 
-Once the installation is complete, navigate to the "Configuration" tab of the add-on. Adjust the configuration according to your needs. Be sure to read through any documentation provided by the add-on to understand the available options.
+```yaml
+# Enable/disable specific collectors
+collectors:
+  cpu: true          # CPU usage and utilization
+  meminfo: true      # Memory statistics
+  diskstats: true    # Disk I/O statistics
+  netdev: true       # Network interface stats
+  netstat: true      # Network connection stats
+  filesystem: true   # Filesystem usage
+  loadavg: true      # System load average
+  time: true         # Current time metrics
+  wifi: false        # WiFi statistics (if applicable)
+  hwmon: true        # Hardware monitoring (temperature/fans)
 
-4. **Start the Add-on**
+# Ignore specific mount points or network devices
+ignore_mount_points:
+  - "/tmp"
+  - "/run"
 
-Navigate to the "Info" tab and click "START" to run the add-on. Check the logs for any errors or information regarding the startup process.
+ignore_network_devices:
+  - "docker0"
+  - "veth*"
 
-5. **Verify the Installation**
+# Custom command line arguments for node_exporter
+cmdline_extra_args: "--collector.disable-defaults --collector.cpu"
+```
 
-Ensure that the Prometheus Node Exporter is running and accessible. You might want to check the "LOGS" tab for any issues or confirmation of successful startup.
+### Security Options
 
-## Support and Contribution
+```yaml
+# Enable HTTP Basic Authentication
+enable_basic_auth: true
+basic_auth_user: "your_username"
+basic_auth_pass: "your_bcrypt_hash"
 
-For support, issues, or enhancement requests, please submit a GitHub issue in the [repository](https://github.com/racksync/hass-addons-prometheus-node-exporter).
+# Enable TLS/HTTPS
+enable_tls: true
+cert_file: "/ssl/fullchain.pem"
+cert_key: "/ssl/privkey.pem"
+```
 
-Contributions to improve the add-on are welcome. Feel free to fork the repository and submit a pull request.
+## Metrics Endpoint
 
-## Notes
+Once running, the add-on exposes metrics at:
 
-- Security: Ensure to secure your deployment, especially if it's used in a production environment.
-- Data Persistence: For long-term usage, consider configuring volumes to persist data across restarts and container recreation.
+- **HTTP**: `http://your-home-assistant:9100/metrics`
+- **HTTPS** (if TLS enabled): `https://your-home-assistant:9100/metrics`
+- **With Auth**: Include Basic Auth headers if enabled
 
-### Automation Training
+### Example Prometheus Configuration
 
-- [Services & Products](http://racksync.com)
-- [Automation Course](https://facebook.com/racksync)
+```yaml
+scrape_configs:
+  - job_name: 'homeassistant-node-exporter'
+    static_configs:
+      - targets: ['your-home-assistant:9100']
+    metrics_path: '/metrics'
+    # Add authentication if enabled
+    basic_auth:
+      username: 'your_username'
+      password: 'your_password'
+```
 
-### Community
+## Development
 
-- [Home Automation Thailand](https://www.facebook.com/groups/hathailand)
-- [Home Automation Marketplace](https://www.facebook.com/groups/hatmarketplace)
-- [Home Automation Thailand Discord](https://discord.gg/Wc5CwnWkp4)
+### Source Code Structure
 
-## [RACKSYNC CO., LTD.](https://racksync.com)
+```
+node-exporter/
+├── config.yaml          # Add-on configuration and schema
+├── build.yaml           # Build configuration
+├── Dockerfile           # Container image definition
+├── CHANGELOG.md         # Version history and release notes
+├── README.md           # This file
+├── icon.png           # Add-on icon
+├── logo.png           # Add-on logo
+├── rootfs/            # Container filesystem
+│   ├── etc/
+│   │   ├── cont-init.d/
+│   │   └── services.d/
+│   └── run.sh
+└── translations/
+    └── en.yaml        # English translations
+```
 
-We help our customers make their lives easier across the entire technology stack with household and business solutions. We modernize life with information technology, optimize and collect data to make everything possible, secure, and trustworthy.
-\
-\
-RACKSYNC COMPANY LIMITED \
-Suratthani, Thailand \
-Email : devops@racksync.com \
-Tel : +66 85 880 8885
+### Making Changes
 
-[![Home Automation Thailand Discord](https://img.shields.io/discord/986181205504438345?style=for-the-badge)](https://discord.gg/Wc5CwnWkp4) [![Github](https://img.shields.io/github/followers/racksync?style=for-the-badge)](https://github.com/racksync)
-[![WebsiteStatus](https://img.shields.io/website?down_color=grey&down_message=Offline&style=for-the-badge&up_color=green&up_message=Online&url=https%3A%2F%2Fracksync.com)](https://racksync.com)
+1. Edit files in the `node-exporter/` directory
+2. Test configuration changes locally
+3. Commit and push to this repository
+4. GitHub Actions will automatically validate and sync to the monorepo
+
+### Automated Sync Process
+
+- **Validation**: Configuration files are validated before sync
+- **Version Management**: Automatic tagging with version information
+- **Monorepo Update**: Files are synced to `racksync/hass-addons-suite`
+- **Release Creation**: Automatic release tag creation
+
+## Security Considerations
+
+- **AppArmor**: Enabled for container isolation
+- **Minimal Permissions**: Only requests necessary system access
+- **Principle of Least Privilege**: Reduces attack surface
+- **Authentication**: Optional Basic Auth and TLS support
+- **Network Access**: Host network access required for system metrics
+
+## Support & Contributing
+
+- **Issues**: [GitHub Issues](https://github.com/racksync/hass-addons-suite/issues) in the monorepo
+- **Discussions**: Community support and feature requests
+- **Contributions**: Pull requests welcome in this source repository
+
+## Version
+
+**Current Version**: `2025.11.1`
+**Release**: [View in Add-ons Suite](https://github.com/racksync/hass-addons-suite/releases/tag/node-exporter-v2025.11.1)
+
+## License
+
+This add-on follows the same licensing as the [Home Assistant Add-ons Suite](https://github.com/racksync/hass-addons-suite).
+
+---
+
+**Maintained by**: [RACKSYNC CO., LTD.](https://racksync.com)
+**Repository**: [Home Assistant Add-ons Suite](https://github.com/racksync/hass-addons-suite)
 
 
 
